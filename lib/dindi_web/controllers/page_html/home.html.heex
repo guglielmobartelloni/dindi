@@ -1,41 +1,52 @@
 <.flash_group flash={@flash} />
 
-<div class="container mx-auto">
-<div class="overflow-x-auto">
-  <table class="table-md">
-    <!-- head -->
-    <thead>
-      <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Job</th>
-        <th>Favorite Color</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- row 1 -->
-      <tr>
-        <th>1</th>
-        <td>Cy Ganderton</td>
-        <td>Quality Control Specialist</td>
-        <td>Blue</td>
-      </tr>
-      <!-- row 2 -->
-      <tr>
-        <th>2</th>
-        <td>Hart Hagerty</td>
-        <td>Desktop Support Technician</td>
-        <td>Purple</td>
-      </tr>
-      <!-- row 3 -->
-      <tr>
-        <th>3</th>
-        <td>Brice Swyre</td>
-        <td>Tax Accountant</td>
-        <td>Red</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+
+<div class="container-md mx-auto">
+  <div class="grid grid-cols-2 gap-4">
+    <div class="indicator mt-5 mb-8">
+      <span class="indicator-item badge badge-secondary">Intesa Sanpaolo</span>
+      <button class="btn">1200$</button>
+    </div>
+    <div class="indicator mt-5 mb-8">
+      <button class="btn btn-primary">New transaction</button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="table-md border border-slate-500">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th class="border border-slate-600">Description</th>
+          <th class="border border-slate-600">Account</th>
+          <th class="border border-slate-600">Category</th>
+          <th class="border border-slate-600">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- row 1 -->
+        <tr>
+          <th class="border border-slate-600">Plane</th>
+          <td class="border border-slate-600">Intesa Sanpaolo</td>
+          <td class="border border-slate-600">Holiday</td>
+          <td class="border border-slate-600">+ 100$</td>
+        </tr>
+        <!-- row 2 -->
+        <tr>
+          <th class="border border-slate-600">Esselunga</th>
+          <td class="border border-slate-600">Intesa Sanpaolo</td>
+          <td class="border border-slate-600">Groceries</td>
+          <td class="border border-slate-600">- 29$</td>
+        </tr>
+        <!-- row 3 -->
+        <tr>
+          <th class="border border-slate-600">Tax</th>
+          <td class="border border-slate-600">N26</td>
+          <td class="border border-slate-600">Tax Accountant</td>
+          <td class="border border-slate-600">+ 299$</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
