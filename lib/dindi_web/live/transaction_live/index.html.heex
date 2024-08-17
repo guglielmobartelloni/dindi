@@ -1,20 +1,12 @@
-<.flash_group flash={@flash} />
-
-
 <div class="container-md mx-auto">
-  <div class="grid grid-cols-4 gap-4 place-items-end">
-
-    <div class="indicator mt-5 mb-8 place-self-start">
-      <span class="indicator-item badge badge-secondary">Intesa Sanpaolo</span>
-      <button class="btn">1200$</button>
-    </div>
-    <div></div>
-    <div></div>
-    <div class="indicator mt-5 mb-8">
-      <button class="btn btn-primary">New transaction</button>
-    </div>
-
-  </div>
+  <.header>
+    Home
+    <:actions>
+      <.link patch={~p"/transactions/new"}>
+        <.button class="mb-5">New Transaction</.button>
+      </.link>
+    </:actions>
+  </.header>
 
   <div class="overflow-x-auto">
     <table class="table border border-slate-500 mx-auto">
@@ -49,3 +41,40 @@
     </table>
   </div>
 </div>
+
+<div class="container-md mx-auto">
+  <.table
+    id="transactions"
+    rows={@streams.transactions}
+    row_click={fn {_id, transaction} -> JS.navigate(~p"/transactions/#{transaction}") end}
+    >
+    <:col :let={trans} label="id"><%= trans.id %></:col>
+    <:action :let={{_id, transaction}}>
+      <div class="sr-only">
+        <.link navigate={~p"/transactions/#{transaction}"}>Show</.link>
+      </div>
+      <.link patch={~p"/transactions/#{transaction}/edit"}>Edit</.link>
+    </:action>
+    <:action :let={{id, transaction}}>
+      <.link
+        phx-click={JS.push("delete", value: %{id: transaction.id}) |> hide("##{id}")}
+        data-confirm="Are you sure?"
+        >
+        Delete
+      </.link>
+    </:action>
+  </.table>
+
+</div>
+
+<.modal :if={@live_action in [:new, :edit]} id="transaction-modal" show on_cancel={JS.patch(~p"/transactions")}>
+  <.live_component
+    module={DindiWeb.TransactionLive.FormComponent}
+    id={@transaction.id || :new}
+    title={@page_title}
+    action={@live_action}
+    transaction={@transaction}
+    categories={@categories}
+    patch={~p"/transactions"}
+  />
+</.modal>
