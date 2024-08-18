@@ -2,7 +2,7 @@
   <.header>
     Home
     <:actions>
-      <.link patch={~p"/transactions/new"}>
+      <.link navigate={~p"/transactions/new"}>
         <.button class="mb-5">New Transaction</.button>
       </.link>
     </:actions>
@@ -19,11 +19,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th class="border border-slate-600">Plane</th>
-          <td class="border border-slate-600">Intesa Sanpaolo</td>
-          <td class="border border-slate-600">Holiday</td>
-          <td class="border border-slate-600">+ 100$</td>
+        <tr :for={ {_, transaction} <- @streams.transactions}>
+          <th class="border border-slate-600"><%= transaction.description %></th>
+          <th class="border border-slate-600"><%= transaction.account %></th>
+          <th class="border border-slate-600"><%= transaction.category %></th>
+          <th class="border border-slate-600"><%= transaction.amount %></th>
         </tr>
         <tr>
           <th class="border border-slate-600">Esselunga</th>
@@ -41,40 +41,3 @@
     </table>
   </div>
 </div>
-
-<div class="container-md mx-auto">
-  <.table
-    id="transactions"
-    rows={@streams.transactions}
-    row_click={fn {_id, transaction} -> JS.navigate(~p"/transactions/#{transaction}") end}
-    >
-    <:col :let={trans} label="id"><%= trans.id %></:col>
-    <:action :let={{_id, transaction}}>
-      <div class="sr-only">
-        <.link navigate={~p"/transactions/#{transaction}"}>Show</.link>
-      </div>
-      <.link patch={~p"/transactions/#{transaction}/edit"}>Edit</.link>
-    </:action>
-    <:action :let={{id, transaction}}>
-      <.link
-        phx-click={JS.push("delete", value: %{id: transaction.id}) |> hide("##{id}")}
-        data-confirm="Are you sure?"
-        >
-        Delete
-      </.link>
-    </:action>
-  </.table>
-
-</div>
-
-<.modal :if={@live_action in [:new, :edit]} id="transaction-modal" show on_cancel={JS.patch(~p"/transactions")}>
-  <.live_component
-    module={DindiWeb.TransactionLive.FormComponent}
-    id={@transaction.id || :new}
-    title={@page_title}
-    action={@live_action}
-    transaction={@transaction}
-    categories={@categories}
-    patch={~p"/transactions"}
-  />
-</.modal>
