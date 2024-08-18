@@ -1,4 +1,5 @@
 defmodule DindiWeb.TransactionLive.New do
+  alias Dindi.Accounts
   alias Ecto.Adapter.Transaction
   use DindiWeb, :live_view
 
@@ -10,6 +11,8 @@ defmodule DindiWeb.TransactionLive.New do
     socket =
       socket
       |> assign(:form, Transactions.change_transaction(%Transaction{}) |> to_form())
+      |> assign(:categories, Transactions.list_categories() |> to_options)
+      |> assign(:accounts, Accounts.list_accounts() |> to_options)
 
     {:ok, socket}
   end
@@ -20,7 +23,6 @@ defmodule DindiWeb.TransactionLive.New do
       %Transaction{}
       |> Transactions.change_transaction(transaction_params)
       |> to_form(action: :validate)
-      |> IO.inspect()
 
     socket = socket |> assign(form: form)
 
@@ -39,5 +41,9 @@ defmodule DindiWeb.TransactionLive.New do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: changeset)}
     end
+  end
+
+  defp to_options(db_list) do
+    Enum.map(db_list, &({&1.name, &1.id}))
   end
 end

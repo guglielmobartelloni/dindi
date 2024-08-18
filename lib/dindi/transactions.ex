@@ -115,6 +115,8 @@ defmodule Dindi.Transactions do
   """
   def list_transactions do
     Repo.all(Transaction)
+    |> Repo.preload(:account)
+    |> Repo.preload(:category)
   end
 
   @doc """

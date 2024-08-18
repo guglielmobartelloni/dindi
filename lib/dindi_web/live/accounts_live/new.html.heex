@@ -1,0 +1,12 @@
+<div class="container-md mx-auto">
+  <div class="card w-96 bg-white shadow-xl p-6 mx-auto">
+    <.simple_form for={@form} phx-change="validate" phx-submit="save" class="card">
+      <.input field={@form[:name]} label="Account name" />
+
+      <.input field={@form[:initial_amount]} type="number" label="Intial Amount" />
+      <:actions>
+        <.button class="btn-primary">Save</.button>
+      </:actions>
+    </.simple_form>
+  </div>
+</div>

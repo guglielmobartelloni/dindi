@@ -19,6 +19,8 @@ defmodule Dindi.Accounts do
   """
   def list_accounts do
     Repo.all(Account)
+    |> Repo.preload(:transactions)
+    |> Enum.map(&(Account.populate_total_amount(&1)))
   end
 
   @doc """

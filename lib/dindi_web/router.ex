@@ -18,10 +18,12 @@ defmodule DindiWeb.Router do
     pipe_through :browser
 
     # get "/", PageController, :home
-    live "/", TransactionLive.Index, :index
-    live "/transactions", TransactionLive.Index, :index
-    live "/transactions/new", TransactionLive.New, :new
-    live "/transactions/:id/edit", TransactionLive.Index, :edit
+    live "/", TransactionLive.Index
+    # live "/transactions", TransactionLive.Index, :index
+    live "/transactions/new", TransactionLive.New
+    # live "/transactions/:id/edit", TransactionLive.Index, :edit
+    live "/accounts", AccountsLive.Index
+    live "/accounts/new", AccountsLive.New
   end
 
   # Other scopes may use custom stacks.

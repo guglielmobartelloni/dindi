@@ -1,4 +1,6 @@
 defmodule Dindi.Transactions.Transaction do
+  alias Dindi.Accounts.Account
+  alias Dindi.Transactions.Category
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,8 +8,8 @@ defmodule Dindi.Transactions.Transaction do
     field :date, :date
     field :description, :string
     field :amount, :decimal
-    field :category, :id
-    field :account, :id
+    belongs_to :category, Category
+    belongs_to :account, Account
 
     timestamps(type: :utc_datetime)
   end
@@ -15,8 +17,10 @@ defmodule Dindi.Transactions.Transaction do
   @doc false
   def changeset(transaction, attrs) do
     transaction
-    |> cast(attrs, [:description, :date, :amount])
-    |> validate_number(:amount, greater_than: 888)
-    |> validate_required([:description, :date, :amount])
+    |> cast(attrs, [:description, :date, :amount, :category_id, :account_id])
+    # |> cast_assoc(:category)
+    # |> cast_assoc(:account)
+    |> validate_number(:amount, greater_than: 0)
+    |> validate_required([:description, :date, :amount, :category_id, :account_id])
   end
 end

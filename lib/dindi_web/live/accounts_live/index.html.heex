@@ -1,0 +1,29 @@
+<h1 class="mt-3 text-3xl font-semibold leading-normal">Accounts</h1>
+
+<div class="container-md mx-auto">
+  <.header>
+    Home
+    <:actions>
+      <.link navigate={~p"/accounts/new"}>
+        <.button class="mb-5">New Account</.button>
+      </.link>
+    </:actions>
+  </.header>
+
+  <div class="overflow-x-auto">
+    <table class="table border border-slate-500 mx-auto">
+      <thead>
+        <tr>
+          <th class="border border-slate-600 text-base">Name</th>
+          <th class="border border-slate-600 text-base">Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr :for={account <- @accounts}>
+          <th class="border border-slate-600"><%= account.name %></th>
+          <th class="border border-slate-600"><%= account.total_amount %></th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
