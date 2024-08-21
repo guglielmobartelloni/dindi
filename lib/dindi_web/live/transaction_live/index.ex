@@ -35,24 +35,24 @@ defmodule DindiWeb.TransactionLive.Index do
         </:actions>
       </.header>
 
-      <div class="overflow-x-auto">
-        <table class="table border border-slate-500 mx-auto">
-          <thead>
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th class="border border-slate-600 text-base">Description</th>
-              <th class="border border-slate-600 text-base">Account</th>
-              <th class="border border-slate-600 text-base">Category</th>
-              <th class="border border-slate-600 text-base">Date</th>
-              <th class="border border-slate-600 text-base">Amount</th>
+              <th scope="col" class="p-4 py-3">Description</th>
+              <th scope="col" class="p-4 py-3">Account</th>
+              <th scope="col" class="p-4 py-3">Category</th>
+              <th scope="col" class="p-4 py-3">Date</th>
+              <th scope="col" class="p-4 py-3">Amount</th>
             </tr>
           </thead>
           <tbody id="table-body" phx-update="stream">
-            <tr :for={{id, transaction} <- @streams.transactions} id={id}>
-              <th class="border border-slate-600"><%= transaction.description %></th>
-              <th class="border border-slate-600"><%= transaction.account.name %></th>
-              <th class="border border-slate-600"><%= transaction.category.name %></th>
-              <th class="border border-slate-600"><%= transaction.date %></th>
-              <th class="border border-slate-600"><%= transaction.amount %></th>
+            <tr :for={{id, transaction} <- @streams.transactions} id={id} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <td class="px-6 py-4"><%= transaction.description %></td>
+              <td class="px-6 py-4"><%= transaction.account.name %></td>
+              <td class="px-6 py-4"><%= transaction.category.name %></td>
+              <td class="px-6 py-4"><%= transaction.date %></td>
+              <td class="px-6 py-4"><%= transaction.amount %></td>
             </tr>
           </tbody>
         </table>
