@@ -20,7 +20,6 @@ defmodule Dindi.Transactions.Transaction do
     |> cast(attrs, [:description, :date, :amount, :category_id, :account_id])
     # |> cast_assoc(:category)
     # |> cast_assoc(:account)
-    |> validate_number(:amount, greater_than: 0)
     |> validate_required([:description, :date, :amount, :category_id, :account_id])
   end
 end

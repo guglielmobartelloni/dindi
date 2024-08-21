@@ -4,6 +4,7 @@ defmodule Dindi.Transactions do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Adapter.Transaction
   alias Dindi.Repo
 
   alias Dindi.Transactions.Category
@@ -114,7 +115,7 @@ defmodule Dindi.Transactions do
 
   """
   def list_transactions do
-    Repo.all(Transaction)
+    Repo.all(from q in Transaction, order_by: [desc: q.date])
     |> Repo.preload(:account)
     |> Repo.preload(:category)
   end

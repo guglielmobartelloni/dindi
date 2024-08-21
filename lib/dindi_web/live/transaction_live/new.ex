@@ -7,6 +7,28 @@ defmodule DindiWeb.TransactionLive.New do
   alias Dindi.Transactions.Transaction
 
   @impl true
+  def render(assigns) do
+    ~H"""
+    <div class="container-md mx-auto">
+      <div class="card w-96 bg-white shadow-xl p-6 mx-auto">
+        <.simple_form for={@form} phx-change="validate" phx-submit="save" class="card">
+          <.input field={@form[:description]} label="Description" />
+          <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction Date" />
+
+          <.input field={@form[:category_id]} label="Categories" type="select" options={@categories} />
+          <.input field={@form[:account_id]} label="Account" type="select" options={@accounts} />
+
+          <.input field={@form[:amount]} type="number" label="Amount" />
+          <:actions>
+            <.button class="btn-primary">Save</.button>
+          </:actions>
+        </.simple_form>
+      </div>
+    </div>
+    """
+  end
+
+  @impl true
   def mount(_params, _session, socket) do
     socket =
       socket
@@ -44,6 +66,6 @@ defmodule DindiWeb.TransactionLive.New do
   end
 
   defp to_options(db_list) do
-    Enum.map(db_list, &({&1.name, &1.id}))
+    Enum.map(db_list, &{&1.name, &1.id})
   end
 end
