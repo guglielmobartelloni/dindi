@@ -9,6 +9,22 @@ defmodule DindiWeb.TransactionLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
+    <div class="container-md mx-auto mb-5">
+      <div class="card bg-white shadow-xl p-6 mx-auto">
+        <.form for={@form} phx-change="validate" phx-submit="save" class="card grid grid-cols-6 gap-4 content-evenly">
+          <.input field={@form[:description]} label="Description" />
+          <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction" />
+
+          <.input field={@form[:category_id]} label="Categories" type="select" options={@categories} />
+          <.input field={@form[:account_id]} label="Account" type="select" options={@accounts} />
+
+          <.input field={@form[:amount]} type="number" label="Amount" />
+
+          <.button class="btn-primary col-2">Save</.button>
+        </.form>
+      </div>
+    </div>
+
     <div class="container-md mx-auto">
       <.header>
         <h1 class="text-3xl font-semibold leading-normal">Transactions</h1>
@@ -42,24 +58,6 @@ defmodule DindiWeb.TransactionLive.Index do
         </table>
       </div>
     </div>
-
-    <div class="container-md mx-auto mt-5">
-      <div class="card w-96 bg-white shadow-xl p-6 mx-auto">
-        <.simple_form for={@form} phx-change="validate" phx-submit="save" class="card">
-          <.input field={@form[:description]} label="Description" />
-          <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction Date" />
-
-          <.input field={@form[:category_id]} label="Categories" type="select" options={@categories} />
-          <.input field={@form[:account_id]} label="Account" type="select" options={@accounts} />
-
-          <.input field={@form[:amount]} type="number" label="Amount" />
-          <:actions>
-            <.button class="btn-primary">Save</.button>
-          </:actions>
-        </.simple_form>
-      </div>
-    </div>
-
     """
   end
 
@@ -90,7 +88,7 @@ defmodule DindiWeb.TransactionLive.Index do
       {:ok, transaction} ->
         {:noreply,
          socket
-         |> stream_insert(:transactions, transaction)
+         |> stream_insert(:transactions, transaction, at: 0)
          |> put_flash(:info, "Transaction created successfully!")
          |> push_navigate(to: ~p"/")}
 
