@@ -1,6 +1,7 @@
 defmodule DindiWeb.TransactionLive.Index do
   use DindiWeb, :live_view
 
+  alias Dindi.Repo
   alias Dindi.Accounts
   alias Ecto.Adapter.Transaction
   alias Dindi.Transactions.Transaction
@@ -11,7 +12,12 @@ defmodule DindiWeb.TransactionLive.Index do
     ~H"""
     <div class="container-md mx-auto mb-5">
       <div class="card bg-white shadow-xl p-6 mx-auto">
-        <.form for={@form} phx-change="validate" phx-submit="save" class="card grid grid-cols-6 gap-4 content-evenly">
+        <.simple_form
+          for={@form}
+          phx-change="validate"
+          phx-submit="save"
+          class="card grid grid-cols-6 gap-4 content-evenly"
+        >
           <.input field={@form[:description]} label="Description" />
           <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction" />
 
@@ -21,7 +27,7 @@ defmodule DindiWeb.TransactionLive.Index do
           <.input field={@form[:amount]} type="number" label="Amount" />
 
           <.button class="btn-primary col-2">Save</.button>
-        </.form>
+        </.simple_form>
       </div>
     </div>
 
@@ -29,9 +35,14 @@ defmodule DindiWeb.TransactionLive.Index do
       <.header>
         <h1 class="text-3xl font-semibold leading-normal">Transactions</h1>
         <:actions>
-          <.link navigate={~p"/transactions/new"}>
-            <.button class="mb-5">New Transaction</.button>
-          </.link>
+          <.simple_form
+            for={@date_form}
+            phx-change="change-date"
+            class="card grid grid-cols-2 gap-4 content-evenly mb-3"
+          >
+            <.input field={@date_form[:start]} type="date" value={Date.utc_today()} />
+            <.input field={@date_form[:end]} type="date" value={Date.utc_today()} />
+          </.simple_form>
         </:actions>
       </.header>
 
@@ -44,15 +55,30 @@ defmodule DindiWeb.TransactionLive.Index do
               <th scope="col" class="p-4 py-3">Category</th>
               <th scope="col" class="p-4 py-3">Date</th>
               <th scope="col" class="p-4 py-3">Amount</th>
+              <th scope="col" class="p-4 py-3">Action</th>
             </tr>
           </thead>
           <tbody id="table-body" phx-update="stream">
-            <tr :for={{id, transaction} <- @streams.transactions} id={id} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <tr
+              :for={{id, transaction} <- @streams.transactions}
+              id={id}
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
               <td class="px-6 py-4"><%= transaction.description %></td>
               <td class="px-6 py-4"><%= transaction.account.name %></td>
               <td class="px-6 py-4"><%= transaction.category.name %></td>
               <td class="px-6 py-4"><%= transaction.date %></td>
               <td class="px-6 py-4"><%= transaction.amount %></td>
+              <td class="px-6 py-4">
+                <.link
+                  phx-value-id={transaction.id}
+                  phx-click="delete-transaction"
+                  data-confirm="Are you sure?"
+                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >
+                  Delete
+                </.link>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -66,6 +92,7 @@ defmodule DindiWeb.TransactionLive.Index do
     {:ok,
      stream(socket, :transactions, Transactions.list_transactions())
      |> assign(:form, Transactions.change_transaction(%Transaction{}) |> to_form())
+     |> assign(:date_form, to_form(%{"start" => "", "end" => ""}))
      |> assign(:categories, Transactions.list_categories() |> to_options)
      |> assign(:accounts, Accounts.list_accounts() |> to_options)}
   end
@@ -86,15 +113,48 @@ defmodule DindiWeb.TransactionLive.Index do
   def handle_event("save", %{"transaction" => transaction_params}, socket) do
     case Transactions.create_transaction(transaction_params) do
       {:ok, transaction} ->
+        IO.inspect(transaction)
+
         {:noreply,
          socket
-         |> stream_insert(:transactions, transaction, at: 0)
-         |> put_flash(:info, "Transaction created successfully!")
-         |> push_navigate(to: ~p"/")}
+         |> stream_insert(:transactions, transaction |> Repo.preload([:category, :account]),
+           at: 0
+         )
+         |> assign(:form, Transactions.change_transaction(%Transaction{}) |> to_form())
+         |> put_flash(:info, "Transaction created successfully!")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: changeset)}
     end
+  end
+
+  @impl true
+  def handle_event("delete-transaction", %{"id" => id}, socket) do
+    to_be_deleted_transaction = Transactions.get_transaction!(id)
+
+    case Transactions.delete_transaction(to_be_deleted_transaction) do
+      {:ok, transaction} ->
+        IO.inspect(transaction)
+
+        {:noreply,
+         socket
+         |> stream_delete(:transactions, to_be_deleted_transaction)
+         |> put_flash(:info, "Transaction deleted successfully!")}
+
+      {:error, _} ->
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_event("change-date", %{"start" => start_date, "end" => end_date}, socket) do
+    filtered_trans = Transactions.list_transactions_by_date(start_date, end_date)
+
+    socket =
+      socket
+      |> stream(:transactions, filtered_trans, reset: true)
+
+    {:noreply, socket}
   end
 
   defp to_options(db_list) do

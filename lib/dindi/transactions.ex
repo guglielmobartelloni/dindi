@@ -120,6 +120,16 @@ defmodule Dindi.Transactions do
     |> Repo.preload(:category)
   end
 
+  def list_transactions_by_date(start_date, end_date) do
+    Repo.all(
+      from t in Transaction,
+        where: t.date >= ^start_date and t.date <= ^end_date,
+        order_by: [desc: t.date]
+    )
+    |> Repo.preload(:account)
+    |> Repo.preload(:category)
+  end
+
   @doc """
   Gets a single transaction.
 
