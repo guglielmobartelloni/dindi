@@ -18,7 +18,7 @@ defmodule DindiWeb.TransactionLive.Index do
           phx-submit="save"
           class="card grid grid-cols-6 gap-4 content-evenly"
         >
-          <.input field={@form[:description]} label="Description" />
+          <.input field={@form[:description]} label="Name" />
           <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction" />
 
           <.input field={@form[:category_id]} label="Categories" type="select" options={@categories} />
@@ -50,7 +50,7 @@ defmodule DindiWeb.TransactionLive.Index do
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" class="p-4 py-3">Description</th>
+              <th scope="col" class="p-4 py-3">Name</th>
               <th scope="col" class="p-4 py-3">Account</th>
               <th scope="col" class="p-4 py-3">Category</th>
               <th scope="col" class="p-4 py-3">Date</th>
@@ -64,12 +64,12 @@ defmodule DindiWeb.TransactionLive.Index do
               id={id}
               class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
-              <td class="px-6 py-4"><%= transaction.description %></td>
-              <td class="px-6 py-4"><%= transaction.account.name %></td>
-              <td class="px-6 py-4"><%= transaction.category.name %></td>
-              <td class="px-6 py-4"><%= transaction.date %></td>
-              <td class="px-6 py-4"><%= transaction.amount %></td>
-              <td class="px-6 py-4">
+              <td class="px-4 py-4"><%= transaction.description %></td>
+              <td class="px-4 py-4"><%= transaction.account.name %></td>
+              <td class="px-4 py-4"><%= transaction.category.name %></td>
+              <td class="px-4 py-4"><%= transaction.date %></td>
+              <td class="px-4 py-4"><%= transaction.amount %></td>
+              <td class="px-4 py-4">
                 <.link
                   phx-value-id={transaction.id}
                   phx-click="delete-transaction"
