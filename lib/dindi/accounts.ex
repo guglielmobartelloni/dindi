@@ -23,6 +23,12 @@ defmodule Dindi.Accounts do
     |> Enum.map(&(Account.populate_total_amount(&1)))
   end
 
+  def list_accounts(start_date, end_date) do
+    Repo.all(Account)
+    |> Repo.preload(:transactions)
+    |> Enum.map(&(Account.populate_total_amount(&1)))
+  end
+
   @doc """
   Gets a single account.
 

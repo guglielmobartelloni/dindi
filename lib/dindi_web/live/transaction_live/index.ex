@@ -32,13 +32,13 @@ defmodule DindiWeb.TransactionLive.Index do
     </div>
 
     <div class="container-md mx-auto">
-      <.header>
+      <.header class="mb-3">
         <h1 class="text-3xl font-semibold leading-normal">Transactions</h1>
         <:actions>
           <.simple_form
             for={@date_form}
             phx-change="change-date"
-            class="card grid grid-cols-2 gap-4 content-evenly mb-3"
+            class="card grid grid-cols-2 gap-4 content-evenly"
           >
             <.input
               field={@date_form[:start]}
@@ -66,7 +66,7 @@ defmodule DindiWeb.TransactionLive.Index do
             <tr
               :for={{id, transaction} <- @streams.transactions}
               id={id}
-              class="border-b dark:border-gray-700 "
+              class="border-b border-base-100 "
             >
               <td class="px-4 py-4"><%= transaction.description %></td>
               <td class="px-4 py-4"><%= transaction.account.name %></td>
@@ -165,11 +165,12 @@ defmodule DindiWeb.TransactionLive.Index do
     socket =
       socket
       |> stream(:transactions, filtered_trans, reset: true)
+      |> put_flash(:info, "Filtered transactions")
 
     {:noreply, socket}
   end
 
-  defp to_options(db_list) do
-    Enum.map(db_list, &{&1.name, &1.id})
+  defp to_options(list) do
+    Enum.map(list, &{&1.name, &1.id})
   end
 end

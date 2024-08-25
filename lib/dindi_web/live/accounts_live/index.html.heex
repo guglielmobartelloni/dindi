@@ -1,20 +1,24 @@
 <div class="container-md mx-auto">
-  <.header>
+  <div class="card w-96 bg-base-300 shadow-xl p-6 mx-auto">
+    <.simple_form
+      for={@form}
+      phx-change="validate"
+      phx-submit="save"
+      class="card gap-4 grid grid-cols-1"
+    >
+      <.input field={@form[:name]} label="Account name" />
+
+      <.input field={@form[:initial_amount]} type="number" label="Intial Amount" />
+      <:actions>
+        <.button class="btn-primary">Save</.button>
+      </:actions>
+    </.simple_form>
+  </div>
+</div>
+
+<div class="container-md mx-auto">
+  <.header class="mb-3">
     <h1 class="text-3xl font-semibold leading-normal">Accounts</h1>
-    <:actions>
-      <.simple_form
-        for={@date_form}
-        phx-change="filter-date"
-        class="card grid grid-cols-2 gap-4 content-evenly mb-3"
-      >
-        <.input
-          field={@date_form[:start_date]}
-          type="date"
-          value={Date.beginning_of_month(Date.utc_today())}
-        />
-        <.input field={@date_form[:end_date]} type="date" value={Date.end_of_month(Date.utc_today())} />
-      </.simple_form>
-    </:actions>
   </.header>
 
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -23,12 +27,23 @@
         <tr class="">
           <th scope="col" class="p-4 py-3">Name</th>
           <th scope="col" class="p-4 py-3">Total Amount</th>
+          <th scope="col" class="p-4 py-3">Action</th>
         </tr>
       </thead>
-      <tbody id="table-body" class="bg-base-300" phx-update="stream">
+      <tbody id="table-body" class="bg-base-300">
         <tr :for={account <- @accounts} class="border-b dark:border-gray-700 ">
           <td class="px-4 py-4"><%= account.name %></td>
           <td class="px-4 py-4"><%= account.total_amount %></td>
+          <td class="px-4 py-4">
+            <.link
+              phx-value-id={account.id}
+              phx-click="delete-account"
+              data-confirm="Are you sure?"
+              class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            >
+              Delete
+            </.link>
+          </td>
         </tr>
       </tbody>
     </table>
