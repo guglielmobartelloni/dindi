@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="[scrollbar-gutter:stable]">
+<html lang="en" id="root" class="[scrollbar-gutter:stable]">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,18 +11,19 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="">
+  <body>
     <div class="navbar bg-base-100">
       <div class="flex-1">
         <.link class="btn btn-ghost text-xl" navigate={~p"/"}>Dindi</.link>
       </div>
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
+          <li><.link phx-click={JS.dispatch("toggle-darkmode")}>Toggle dark</.link></li>
           <li><.link navigate={~p"/accounts"}>Accounts</.link></li>
           <li>
             <details>
               <summary>Parent</summary>
-              <ul class="bg-base-100 rounded-t-none p-2">
+              <ul class="rounded-t-none p-2">
                 <li><a>Link 1</a></li>
                 <li><a>Link 2</a></li>
               </ul>

@@ -11,22 +11,22 @@ defmodule DindiWeb.TransactionLive.Index do
   def render(assigns) do
     ~H"""
     <div class="container-md mx-auto mb-5">
-      <div class="card bg-white shadow-xl p-6 mx-auto">
+      <div class="card bg-base-300 shadow-xl p-6 mx-auto">
         <.simple_form
           for={@form}
           phx-change="validate"
           phx-submit="save"
-          class="card grid grid-cols-6 gap-4 content-evenly"
+          class="card text-base-content grid lg:grid-cols-6 grid-cols-2 gap-4"
         >
           <.input field={@form[:description]} label="Name" />
           <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction" />
 
-          <.input field={@form[:category_id]} label="Categories" type="select" options={@categories} />
-          <.input field={@form[:account_id]} label="Account" type="select" options={@accounts} />
+          <.input field={@form[:category_id]} prompt="Category" type="select" options={@categories} />
+          <.input field={@form[:account_id]} prompt="Account" type="select" options={@accounts} />
 
           <.input field={@form[:amount]} type="number" label="Amount" />
 
-          <.button class="btn-primary col-2">Save</.button>
+          <.button class="btn-primary">Save</.button>
         </.simple_form>
       </div>
     </div>
@@ -40,16 +40,20 @@ defmodule DindiWeb.TransactionLive.Index do
             phx-change="change-date"
             class="card grid grid-cols-2 gap-4 content-evenly mb-3"
           >
-            <.input field={@date_form[:start]} type="date" value={Date.utc_today()} />
-            <.input field={@date_form[:end]} type="date" value={Date.utc_today()} />
+            <.input
+              field={@date_form[:start]}
+              type="date"
+              value={Date.beginning_of_month(Date.utc_today())}
+            />
+            <.input field={@date_form[:end]} type="date" value={Date.end_of_month(Date.utc_today())} />
           </.simple_form>
         </:actions>
       </.header>
 
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
+        <table class="w-full text-sm text-left text-base-content">
+          <thead class="text-xs uppercase bg-base-200">
+            <tr class="">
               <th scope="col" class="p-4 py-3">Name</th>
               <th scope="col" class="p-4 py-3">Account</th>
               <th scope="col" class="p-4 py-3">Category</th>
@@ -58,17 +62,25 @@ defmodule DindiWeb.TransactionLive.Index do
               <th scope="col" class="p-4 py-3">Action</th>
             </tr>
           </thead>
-          <tbody id="table-body" phx-update="stream">
+          <tbody id="table-body" class="bg-base-300" phx-update="stream">
             <tr
               :for={{id, transaction} <- @streams.transactions}
               id={id}
-              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+              class="border-b dark:border-gray-700 "
             >
               <td class="px-4 py-4"><%= transaction.description %></td>
               <td class="px-4 py-4"><%= transaction.account.name %></td>
               <td class="px-4 py-4"><%= transaction.category.name %></td>
               <td class="px-4 py-4"><%= transaction.date %></td>
-              <td class="px-4 py-4"><%= transaction.amount %></td>
+              <td class={[
+                "px-4 py-4",
+                if(Decimal.compare(transaction.amount, 0) == :gt,
+                  do: "text-success",
+                  else: "text-error"
+                )
+              ]}>
+                €<%= transaction.amount %>
+              </td>
               <td class="px-4 py-4">
                 <.link
                   phx-value-id={transaction.id}

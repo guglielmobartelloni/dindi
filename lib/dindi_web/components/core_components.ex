@@ -315,7 +315,7 @@ defmodule DindiWeb.CoreComponents do
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+          class="checkbox"
           {@rest}
         />
         <%= @label %>
@@ -328,11 +328,11 @@ defmodule DindiWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div>
-      <.label for={@id}><%= @label %></.label>
+      <!-- <.label for={@id}><%= @label %></.label> -->
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+        class="select select-bordered w-full max-w-xs"
         multiple={@multiple}
         {@rest}
       >
@@ -367,16 +367,17 @@ defmodule DindiWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div>
-      <.label for={@id}><%= @label %></.label>
+      <!-- <.label for={@id}><%= @label %></.label> -->
       <input
         type={@type}
         name={@name}
         id={@id}
+        placeholder={@label}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          @errors == [] && "border-zinc-300 text-red focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          "input input-bordered w-full max-w-xs",
+          @errors == [] && "",
+          @errors != [] && "input-error"
         ]}
         {@rest}
       />
@@ -393,7 +394,7 @@ defmodule DindiWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="">
       <%= render_slot(@inner_block) %>
     </label>
     """
