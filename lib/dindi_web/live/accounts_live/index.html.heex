@@ -10,7 +10,7 @@
 
       <.input field={@form[:initial_amount]} type="number" label="Intial Amount" />
       <:actions>
-        <.button class="btn-primary">Save</.button>
+        <.button class="btn-primary">Add</.button>
       </:actions>
     </.simple_form>
   </div>
@@ -27,6 +27,7 @@
         <tr class="">
           <th scope="col" class="p-4 py-3">Name</th>
           <th scope="col" class="p-4 py-3">Total Amount</th>
+          <th scope="col" class="p-4 py-3">N. Transactions</th>
           <th scope="col" class="p-4 py-3">Action</th>
         </tr>
       </thead>
@@ -34,6 +35,7 @@
         <tr :for={account <- @accounts} class="border-b dark:border-gray-700 ">
           <td class="px-4 py-4"><%= account.name %></td>
           <td class="px-4 py-4"><%= account.total_amount %></td>
+          <td class="px-4 py-4"><%= length(account.transactions) %></td>
           <td class="px-4 py-4">
             <.link
               phx-value-id={account.id}

@@ -1,10 +1,11 @@
-defmodule DindiWeb.TransactionLive.Index do
+defmodule DindiWeb.CategoriesLive.Index do
   use DindiWeb, :live_view
 
   alias Dindi.Repo
   alias Dindi.Accounts
   alias Ecto.Adapter.Transaction
   alias Dindi.Transactions.Transaction
+  alias Dindi.Transactions.Category
   alias Dindi.Transactions
 
   @impl true
@@ -18,16 +19,7 @@ defmodule DindiWeb.TransactionLive.Index do
           phx-submit="save"
           class="card text-base-content grid lg:grid-cols-6 grid-cols-2 gap-4"
         >
-          <.input field={@form[:description]} label="Name" />
-          <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction" />
-
-          <.input field={@form[:type]} prompt="Type" type="select" options={@types} />
-
-          <.input field={@form[:category_id]} prompt="Category" type="select" options={@categories} />
-          <.input field={@form[:account_id]} prompt="Account" type="select" options={@accounts} />
-
-          <.input field={@form[:amount]} type="number" label="Amount" />
-
+          <.input field={@form[:name]} label="Name" />
           <.button class="btn-primary">Save</.button>
         </.simple_form>
       </div>
@@ -58,35 +50,21 @@ defmodule DindiWeb.TransactionLive.Index do
             <tr class="">
               <th scope="col" class="p-4 py-3">Name</th>
               <th scope="col" class="p-4 py-3">Account</th>
-              <th scope="col" class="p-4 py-3">Category</th>
-              <th scope="col" class="p-4 py-3">Date</th>
-              <th scope="col" class="p-4 py-3">Amount</th>
               <th scope="col" class="p-4 py-3">Action</th>
             </tr>
           </thead>
           <tbody id="table-body" class="bg-base-300" phx-update="stream">
             <tr
-              :for={{id, transaction} <- @streams.transactions}
+              :for={{id, category} <- @streams.categories}
               id={id}
               class="border-b border-base-100 "
             >
-              <td class="px-4 py-4"><%= transaction.description %></td>
-              <td class="px-4 py-4"><%= transaction.account.name %></td>
-              <td class="px-4 py-4"><%= transaction.category.name %></td>
-              <td class="px-4 py-4"><%= transaction.date %></td>
-              <td class={[
-                "px-4 py-4",
-                if(Decimal.compare(transaction.amount, 0) == :gt,
-                  do: "text-success",
-                  else: "text-error"
-                )
-              ]}>
-                €<%= transaction.amount %>
-              </td>
+              <td class="px-4 py-4"><%= category.name %></td>
+              <td class="px-4 py-4">Dummy</td>
               <td class="px-4 py-4">
                 <.link
-                  phx-value-id={transaction.id}
-                  phx-click="delete-transaction"
+                  phx-value-id={category.id}
+                  phx-click="delete-category"
                   data-confirm="Are you sure?"
                   class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                 >
@@ -104,19 +82,18 @@ defmodule DindiWeb.TransactionLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     {:ok,
-     stream(socket, :transactions, Transactions.list_transactions())
-     |> assign(:form, Transactions.change_transaction(%Transaction{}) |> to_form())
+     stream(socket, :categories, Transactions.list_categories())
+     |> assign(:form, Transactions.change_category(%Category{}) |> to_form())
      |> assign(:date_form, to_form(%{"start" => "", "end" => ""}))
      |> assign(:types, [{"+", :gain}, {"-", :expense}])
-     |> assign(:categories, Transactions.list_categories() |> to_options)
-     |> assign(:accounts, Accounts.list_accounts() |> to_options)}
+    }
   end
 
   @impl true
-  def handle_event("validate", %{"transaction" => transaction_params}, socket) do
+  def handle_event("validate", %{"category" => category_params}, socket) do
     form =
-      %Transaction{}
-      |> Transactions.change_transaction(transaction_params)
+      %Category{}
+      |> Transactions.change_category(category_params)
       |> to_form(action: :validate)
 
     socket = socket |> assign(form: form)
@@ -125,29 +102,17 @@ defmodule DindiWeb.TransactionLive.Index do
   end
 
   @impl true
-  def handle_event("save", %{"transaction" => transaction_params}, socket) do
-    transaction_params =
-      case transaction_params do
-        %{"type" => :gain} ->
-          transaction_params
-
-        %{"type" => :expense, "amount" => amount} ->
-          %{transaction_params | "amount" => Decimal.mult(amount, -1)}
-      end
-
-    IO.inspect(transaction_params)
-
-    case Transactions.create_transaction(transaction_params) do
-      {:ok, transaction} ->
-        IO.inspect(transaction)
+  def handle_event("save", %{"category" => category_params}, socket) do
+    case Transactions.create_category(category_params) do
+      {:ok, category} ->
 
         {:noreply,
          socket
-         |> stream_insert(:transactions, transaction |> Repo.preload([:category, :account]),
+         |> stream_insert(:categories, category,
            at: 0
          )
-         |> assign(:form, Transactions.change_transaction(%Transaction{}) |> to_form())
-         |> put_flash(:info, "Transaction created successfully!")}
+         |> assign(:form, Transactions.change_category(%Category{}) |> to_form())
+         |> put_flash(:info, "Category created successfully!")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: changeset)}
@@ -155,17 +120,16 @@ defmodule DindiWeb.TransactionLive.Index do
   end
 
   @impl true
-  def handle_event("delete-transaction", %{"id" => id}, socket) do
-    to_be_deleted_transaction = Transactions.get_transaction!(id)
+  def handle_event("delete-category", %{"id" => id}, socket) do
+    to_be_deleted_category = Transactions.get_category!(id)
 
-    case Transactions.delete_transaction(to_be_deleted_transaction) do
-      {:ok, transaction} ->
-        IO.inspect(transaction)
+    case Transactions.delete_category(to_be_deleted_category) do
+      {:ok, _} ->
 
         {:noreply,
          socket
-         |> stream_delete(:transactions, to_be_deleted_transaction)
-         |> put_flash(:info, "Transaction deleted successfully!")}
+         |> stream_delete(:categories, to_be_deleted_category)
+         |> put_flash(:info, "Category deleted successfully!")}
 
       {:error, _} ->
         {:noreply, socket}

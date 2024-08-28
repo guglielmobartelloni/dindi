@@ -24,6 +24,7 @@ defmodule DindiWeb.Router do
     # live "/transactions/:id/edit", TransactionLive.Index, :edit
     live "/accounts", AccountsLive.Index
     live "/accounts/new", AccountsLive.New
+    live "/categories", CategoriesLive.Index
   end
 
   # Other scopes may use custom stacks.
