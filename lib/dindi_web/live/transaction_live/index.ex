@@ -128,10 +128,10 @@ defmodule DindiWeb.TransactionLive.Index do
   def handle_event("save", %{"transaction" => transaction_params}, socket) do
     transaction_params =
       case transaction_params do
-        %{"type" => :gain} ->
+        %{"type" => "gain"} ->
           transaction_params
 
-        %{"type" => :expense, "amount" => amount} ->
+        %{"type" => "expense", "amount" => amount} ->
           %{transaction_params | "amount" => Decimal.mult(amount, -1)}
       end
 

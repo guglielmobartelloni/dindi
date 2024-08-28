@@ -1,10 +1,6 @@
 defmodule DindiWeb.CategoriesLive.Index do
   use DindiWeb, :live_view
 
-  alias Dindi.Repo
-  alias Dindi.Accounts
-  alias Ecto.Adapter.Transaction
-  alias Dindi.Transactions.Transaction
   alias Dindi.Transactions.Category
   alias Dindi.Transactions
 
@@ -27,7 +23,7 @@ defmodule DindiWeb.CategoriesLive.Index do
 
     <div class="container-md mx-auto">
       <.header class="mb-3">
-        <h1 class="text-3xl font-semibold leading-normal">Transactions</h1>
+        <h1 class="text-3xl font-semibold leading-normal">Categories</h1>
         <:actions>
           <.simple_form
             for={@date_form}
@@ -148,7 +144,4 @@ defmodule DindiWeb.CategoriesLive.Index do
     {:noreply, socket}
   end
 
-  defp to_options(list) do
-    Enum.map(list, &{&1.name, &1.id})
-  end
 end
