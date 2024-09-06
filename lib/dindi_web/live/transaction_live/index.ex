@@ -33,21 +33,25 @@ defmodule DindiWeb.TransactionLive.Index do
       </div>
     </div>
 
-    <div class="container-md mx-auto">
+    <div class="container-md mx-auto mb-5">
       <.header class="mb-3">
-        <h1 class="text-3xl font-semibold leading-normal">Transactions</h1>
+        <div class="grid grid-cols-2 gap-2">
+          <h1 class="text-3xl text-base-content font-semibold leading-normal">Transactions</h1>
+          <.link
+            phx-click="reset-date"
+            class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+          >
+            Reset
+          </.link>
+        </div>
         <:actions>
           <.simple_form
             for={@date_form}
             phx-change="change-date"
             class="card grid grid-cols-2 gap-4 content-evenly"
           >
-            <.input
-              field={@date_form[:start]}
-              type="date"
-              value={Date.beginning_of_month(Date.utc_today())}
-            />
-            <.input field={@date_form[:end]} type="date" value={Date.end_of_month(Date.utc_today())} />
+            <.input field={@date_form[:start]} type="date" />
+            <.input field={@date_form[:end]} type="date" />
           </.simple_form>
         </:actions>
       </.header>
@@ -98,6 +102,135 @@ defmodule DindiWeb.TransactionLive.Index do
         </table>
       </div>
     </div>
+
+    <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+      <div class="flex justify-between">
+        <div>
+          <h5 class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">32.4k</h5>
+          <p class="text-base font-normal text-gray-500 dark:text-gray-400">Users this week</p>
+        </div>
+        <div class="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
+          12%
+          <svg
+            class="w-3 h-3 ms-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13V1m0 0L1 5m4-4 4 4"
+            />
+          </svg>
+        </div>
+      </div>
+      <div id="area-chart"></div>
+      <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
+        <div class="flex justify-between items-center pt-5">
+          <!-- Button -->
+          <button
+            id="dropdownDefaultButton"
+            data-dropdown-toggle="lastDaysdropdown"
+            data-dropdown-placement="bottom"
+            class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+            type="button"
+          >
+            Last 7 days
+            <svg
+              class="w-2.5 m-2.5 ms-1.5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 4 4 4-4"
+              />
+            </svg>
+          </button>
+          <!-- Dropdown menu -->
+          <div
+            id="lastDaysdropdown"
+            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+          >
+            <ul
+              class="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownDefaultButton"
+            >
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Yesterday
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Today
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Last 7 days
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Last 30 days
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Last 90 days
+                </a>
+              </li>
+            </ul>
+          </div>
+          <a
+            href="#"
+            class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2"
+          >
+            Users Report
+            <svg
+              class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 9 4-4-4-4"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
     """
   end
 
@@ -106,7 +239,13 @@ defmodule DindiWeb.TransactionLive.Index do
     {:ok,
      stream(socket, :transactions, Transactions.list_transactions())
      |> assign(:form, Transactions.change_transaction(%Transaction{}) |> to_form())
-     |> assign(:date_form, to_form(%{"start" => "", "end" => ""}))
+     |> assign(
+       :date_form,
+       to_form(%{
+         "start" => Date.beginning_of_month(Date.utc_today()),
+         "end" => Date.end_of_month(Date.utc_today())
+       })
+     )
      |> assign(:types, [{"+", :gain}, {"-", :expense}])
      |> assign(:categories, Transactions.list_categories() |> to_options)
      |> assign(:accounts, Accounts.list_accounts() |> to_options)}
@@ -134,8 +273,8 @@ defmodule DindiWeb.TransactionLive.Index do
         %{"type" => "expense", "amount" => amount} ->
           %{transaction_params | "amount" => Decimal.mult(amount, -1)}
       end
+      |> trim()
 
-    IO.inspect(transaction_params)
 
     case Transactions.create_transaction(transaction_params) do
       {:ok, transaction} ->
@@ -184,7 +323,21 @@ defmodule DindiWeb.TransactionLive.Index do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_event("reset-date", _, socket) do
+    socket =
+      socket
+      |> stream(:transactions, Transactions.list_transactions(), reset: true)
+      |> assign(:date_form, to_form(%{"start" => "", "end" => ""}))
+
+    {:noreply, socket}
+  end
+
   defp to_options(list) do
     Enum.map(list, &{&1.name, &1.id})
+  end
+
+  defp trim(%{"description" => desc} = params) do
+    %{params | "description" => desc |> String.trim()}
   end
 end

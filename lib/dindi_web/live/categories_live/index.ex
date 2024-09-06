@@ -16,7 +16,7 @@ defmodule DindiWeb.CategoriesLive.Index do
           class="card text-base-content grid lg:grid-cols-6 grid-cols-2 gap-4"
         >
           <.input field={@form[:name]} label="Name" />
-          <.button class="btn-primary">Save</.button>
+          <.button class="btn-primary">Add</.button>
         </.simple_form>
       </div>
     </div>
@@ -24,20 +24,6 @@ defmodule DindiWeb.CategoriesLive.Index do
     <div class="container-md mx-auto">
       <.header class="mb-3">
         <h1 class="text-3xl font-semibold leading-normal">Categories</h1>
-        <:actions>
-          <.simple_form
-            for={@date_form}
-            phx-change="change-date"
-            class="card grid grid-cols-2 gap-4 content-evenly"
-          >
-            <.input
-              field={@date_form[:start]}
-              type="date"
-              value={Date.beginning_of_month(Date.utc_today())}
-            />
-            <.input field={@date_form[:end]} type="date" value={Date.end_of_month(Date.utc_today())} />
-          </.simple_form>
-        </:actions>
       </.header>
 
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -45,7 +31,6 @@ defmodule DindiWeb.CategoriesLive.Index do
           <thead class="text-xs uppercase bg-base-200">
             <tr class="">
               <th scope="col" class="p-4 py-3">Name</th>
-              <th scope="col" class="p-4 py-3">Account</th>
               <th scope="col" class="p-4 py-3">Action</th>
             </tr>
           </thead>
@@ -56,7 +41,6 @@ defmodule DindiWeb.CategoriesLive.Index do
               class="border-b border-base-100 "
             >
               <td class="px-4 py-4"><%= category.name %></td>
-              <td class="px-4 py-4">Dummy</td>
               <td class="px-4 py-4">
                 <.link
                   phx-value-id={category.id}

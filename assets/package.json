@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "daisyui": "^4.12.10"
+  },
+  "dependencies": {
+    "apexcharts": "^3.52.0"
   }
 }
