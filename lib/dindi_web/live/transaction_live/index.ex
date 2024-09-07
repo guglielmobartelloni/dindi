@@ -92,7 +92,7 @@ defmodule DindiWeb.TransactionLive.Index do
                   phx-value-id={transaction.id}
                   phx-click="delete-transaction"
                   data-confirm="Are you sure?"
-                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  class="font-medium text-red-600 dark:text-red-500 hover:underline"
                 >
                   Delete
                 </.link>

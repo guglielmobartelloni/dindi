@@ -28,6 +28,7 @@
           <th scope="col" class="p-4 py-3">Name</th>
           <th scope="col" class="p-4 py-3">Total Amount</th>
           <th scope="col" class="p-4 py-3">N. Transactions</th>
+          <th scope="col" class="p-4 py-3">Connect</th>
           <th scope="col" class="p-4 py-3">Action</th>
         </tr>
       </thead>
@@ -38,10 +39,18 @@
           <td class="px-4 py-4"><%= length(account.transactions) %></td>
           <td class="px-4 py-4">
             <.link
+              class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              href={~p"/import?id=#{account.id}"}
+            >
+              Connect
+            </.link>
+          </td>
+          <td class="px-4 py-4">
+            <.link
               phx-value-id={account.id}
               phx-click="delete-account"
               data-confirm="Are you sure?"
-              class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              class="font-medium text-red-600 dark:text-red-500 hover:underline"
             >
               Delete
             </.link>

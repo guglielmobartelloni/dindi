@@ -59,7 +59,8 @@ defmodule Dindi.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:tesla, "~> 1.11"},
-      {:jason, "~> 1.4"}
+      {:jason, "~> 1.4"},
+      {:tesla_cache, "~> 1.1.0"}
     ]
   end
 

@@ -471,12 +471,12 @@ defmodule DindiWeb.CoreComponents do
       end
 
     ~H"""
-    <div class="overflow-x-auto">
-      <table class="table">
-        <thead>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left text-base-content">
+        <thead class="text-xs uppercase bg-base-200">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
-            <th :if={@action != []} class="relative p-0 pb-4">
+            <th :for={col <- @col} class="p-4 py-3"><%= col[:label] %></th>
+            <th :if={@action != []} class="relative p-4 py-3">
               <span class="sr-only"><%= gettext("Actions") %></span>
             </th>
           </tr>
@@ -484,13 +484,13 @@ defmodule DindiWeb.CoreComponents do
         <tbody
           id={@id}
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class=""
+          class="bg-base-300"
         >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-zinc-50">
+          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="border-b border-base-100">
             <td
               :for={{col, _} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
-              class={["relative p-0", @row_click && "hover:cursor-pointer"]}
+              class={["px-4 py-4", @row_click && "hover:cursor-pointer"]}
             >
                   <%= render_slot(col, @row_item.(row)) %>
             </td>

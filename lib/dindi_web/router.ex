@@ -25,6 +25,8 @@ defmodule DindiWeb.Router do
     live "/accounts", AccountsLive.Index
     live "/accounts/new", AccountsLive.New
     live "/categories", CategoriesLive.Index
+    live "/import", ImportLive.Index
+    live "/import/end", ImportLive.FinishConnection
   end
 
   # Other scopes may use custom stacks.
