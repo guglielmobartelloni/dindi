@@ -22,4 +22,5 @@ defmodule Dindi.Transactions.Transaction do
     # |> cast_assoc(:account)
     |> validate_required([:description, :date, :amount, :category_id, :account_id])
   end
+
 end

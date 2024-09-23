@@ -66,13 +66,13 @@ defmodule DindiWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition"
+              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl p-14 shadow-lg ring-1 transition bg-base-200"
             >
               <div class="absolute top-6 right-5">
                 <button
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
-                  class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
+                  class="-m-3 text-base-content flex-none p-3 opacity-20 hover:opacity-40"
                   aria-label={gettext("close")}
                 >
                   <.icon name="hero-x-mark-solid" class="h-5 w-5" />
@@ -203,9 +203,9 @@ defmodule DindiWeb.CoreComponents do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
         <%= render_slot(@inner_block, f) %>
-        <div :for={action <- @actions} class="form-control mt-6">
-          <%= render_slot(action, f) %>
-        </div>
+      <div :for={action <- @actions} class="form-control mt-6">
+        <%= render_slot(action, f) %>
+      </div>
     </.form>
     """
   end
@@ -306,7 +306,7 @@ defmodule DindiWeb.CoreComponents do
       end)
 
     ~H"""
-    <div>
+    <div class="form-control">
       <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
         <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <input
@@ -327,8 +327,11 @@ defmodule DindiWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div>
+    <div class="form-control">
       <!-- <.label for={@id}><%= @label %></.label> -->
+      <label class="label">
+        <span class="label-text"><%= @label %></span>
+      </label>
       <select
         id={@id}
         name={@name}
@@ -346,7 +349,7 @@ defmodule DindiWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div>
+    <div class="form-control">
       <.label for={@id}><%= @label %></.label>
       <textarea
         id={@id}
@@ -366,13 +369,16 @@ defmodule DindiWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div>
+    <div class="form-control">
       <!-- <.label for={@id}><%= @label %></.label> -->
+      <label class="label">
+        <span class="label-text"><%= @label %></span>
+      </label>
       <input
         type={@type}
         name={@name}
         id={@id}
-        placeholder={@label}
+        placeholder={@prompt}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
           "input input-bordered w-full max-w-xs",
@@ -492,14 +498,11 @@ defmodule DindiWeb.CoreComponents do
               phx-click={@row_click && @row_click.(row)}
               class={["px-4 py-4", @row_click && "hover:cursor-pointer"]}
             >
-                  <%= render_slot(col, @row_item.(row)) %>
+              <%= render_slot(col, @row_item.(row)) %>
             </td>
             <td :if={@action != []} class="">
               <div class="">
-                <span
-                  :for={action <- @action}
-                  class=""
-                >
+                <span :for={action <- @action} class="mx-5">
                   <%= render_slot(action, @row_item.(row)) %>
                 </span>
               </div>

@@ -10,28 +10,36 @@ defmodule DindiWeb.TransactionLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="container-md mx-auto mb-5">
-      <div class="card bg-base-300 shadow-xl p-6 mx-auto">
-        <.simple_form
-          for={@form}
-          phx-change="validate"
-          phx-submit="save"
-          class="card text-base-content grid lg:grid-cols-6 grid-cols-2 gap-4"
-        >
-          <.input field={@form[:description]} label="Name" />
-          <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction" />
+    <.button class="btn-primary" phx-click={show_modal("form-modal")}>Create transaction</.button>
+    <.modal id="form-modal">
+      <div class="container mx-auto p-4">
+        <div class="card">
+          <.simple_form for={@form} phx-change="validate" phx-submit="save" class="card-body mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <.input field={@form[:description]} label="Name" prompt="Amazon superman pants" />
+              <.input field={@form[:date]} type="date" value={Date.utc_today()} label="Transaction" />
+            </div>
 
-          <.input field={@form[:type]} prompt="Type" type="select" options={@types} />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <.input field={@form[:type]} label="Type" type="select" options={@types} />
+              <.input
+                field={@form[:category_id]}
+                type="select"
+                label="Category"
+                options={@categories}
+              />
+            </div>
 
-          <.input field={@form[:category_id]} prompt="Category" type="select" options={@categories} />
-          <.input field={@form[:account_id]} prompt="Account" type="select" options={@accounts} />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <.input field={@form[:account_id]} label="Account" type="select" options={@accounts} />
+              <.input field={@form[:amount]} type="number" label="Amount" />
+            </div>
 
-          <.input field={@form[:amount]} type="number" label="Amount" />
-
-          <.button class="btn-primary">Save</.button>
-        </.simple_form>
+            <.button class="btn-primary mt-5" phx-click={hide_modal("form-modal")}>Save</.button>
+          </.simple_form>
+        </div>
       </div>
-    </div>
+    </.modal>
 
     <div class="container-md mx-auto mb-5">
       <.header class="mb-3">
@@ -75,8 +83,16 @@ defmodule DindiWeb.TransactionLive.Index do
               class="border-b border-base-100 "
             >
               <td class="px-4 py-4"><%= transaction.description %></td>
-              <td class="px-4 py-4"><%= transaction.account.name %></td>
-              <td class="px-4 py-4"><%= transaction.category.name %></td>
+              <%= if transaction.account != nil do %>
+                <td class="px-4 py-4"><%= transaction.account.name %></td>
+              <% else %>
+                <td class="px-4 py-4"></td>
+              <% end %>
+              <%= if transaction.account != nil do %>
+                <td class="px-4 py-4"><%= transaction.category.name %></td>
+              <% else %>
+                <td class="px-4 py-4"></td>
+              <% end %>
               <td class="px-4 py-4"><%= transaction.date %></td>
               <td class={[
                 "px-4 py-4",
@@ -274,7 +290,6 @@ defmodule DindiWeb.TransactionLive.Index do
           %{transaction_params | "amount" => Decimal.mult(amount, -1)}
       end
       |> trim()
-
 
     case Transactions.create_transaction(transaction_params) do
       {:ok, transaction} ->

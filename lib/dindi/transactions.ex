@@ -4,8 +4,8 @@ defmodule Dindi.Transactions do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Adapter.Transaction
   alias Dindi.Repo
+  alias Dindi.Transactions.Transaction
 
   alias Dindi.Transactions.Category
 
@@ -20,6 +20,10 @@ defmodule Dindi.Transactions do
   """
   def list_categories do
     Repo.all(Category)
+  end
+
+  def insert_transactions(transactions) do
+    Repo.insert_all(Transaction, transactions)
   end
 
   @doc """
@@ -103,7 +107,6 @@ defmodule Dindi.Transactions do
     Category.changeset(category, attrs)
   end
 
-  alias Dindi.Transactions.Transaction
 
   @doc """
   Returns the list of transactions.

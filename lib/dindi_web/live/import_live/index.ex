@@ -2,7 +2,6 @@ defmodule DindiWeb.ImportLive.Index do
     alias Dindi.Countries
     use DindiWeb, :live_view
 
-    alias Ecto.Adapter.Transaction
     alias Dindi.Transactions.Importer
 
     @impl true
