@@ -8,6 +8,7 @@ defmodule Dindi.Transactions.Transaction do
     field :date, :date
     field :description, :string
     field :amount, :decimal
+    field :unique_id, :string
     belongs_to :category, Category
     belongs_to :account, Account
 

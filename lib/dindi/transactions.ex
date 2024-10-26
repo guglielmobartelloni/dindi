@@ -107,7 +107,6 @@ defmodule Dindi.Transactions do
     Category.changeset(category, attrs)
   end
 
-
   @doc """
   Returns the list of transactions.
 
@@ -148,6 +147,10 @@ defmodule Dindi.Transactions do
 
   """
   def get_transaction!(id), do: Repo.get!(Transaction, id)
+
+  def get_transaction_by_unique_id!(unique_id) do
+    from(t in Transaction, where: field(t, :unique_id) == ^unique_id) |> Repo.one()
+  end
 
   @doc """
   Creates a transaction.
