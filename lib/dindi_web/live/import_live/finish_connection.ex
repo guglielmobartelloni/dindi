@@ -38,10 +38,10 @@ defmodule DindiWeb.ImportLive.FinishConnection do
       socket
       |> assign_async(:transactions, fn ->
         client = Importer.new()
-        %{"accounts" => accounts} = client |> Importer.list_accounts(ref) |> IO.inspect()
+        %{"accounts" => accounts} = client |> Importer.list_accounts(ref)
 
         %{"transactions" => %{"booked" => booked, "pending" => pending}} =
-          Importer.list_transactions(client, accounts |> Enum.at(0)) |> IO.inspect()
+          Importer.list_transactions(client, accounts |> Enum.at(0))
 
         transactions = booked ++ pending
         {:ok, %{transactions: transactions}}
@@ -54,9 +54,10 @@ defmodule DindiWeb.ImportLive.FinishConnection do
   @spec handle_event(<<_::80>>, any(), any()) :: {:noreply, any()}
   def handle_event("import-all", _, socket) do
     socket.assigns.transactions.result
+    |> IO.inspect
     |> Enum.map(fn %{
                      "bookingDate" => _,
-                     "internalTransactionId" => _,
+                     "internalTransactionId" => internal_id,
                      "remittanceInformationUnstructured" => desc,
                      "transactionAmount" => %{"amount" => amount, "currency" => _},
                      "transactionId" => _,
@@ -67,11 +68,14 @@ defmodule DindiWeb.ImportLive.FinishConnection do
         description: desc,
         amount: Decimal.new(amount),
         inserted_at: DateTime.utc_now() |> DateTime.truncate(:second),
-        updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
+        updated_at: DateTime.utc_now() |> DateTime.truncate(:second),
+        unique_id: internal_id
       }
     end)
-    |> Transactions.insert_transactions()
+    |> Transactions.insert_transactions() |> IO.inspect
 
-    {:noreply, socket}
+    {:noreply, socket
+      |> put_flash(:info, "Imported transactions!")
+      |> push_navigate(to: ~p"/")}
   end
 end

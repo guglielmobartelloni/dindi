@@ -18,10 +18,10 @@ defmodule Dindi.Transactions.Transaction do
   @doc false
   def changeset(transaction, attrs) do
     transaction
-    |> cast(attrs, [:description, :date, :amount, :category_id, :account_id])
+    |> cast(attrs, [:description, :date, :amount, :category_id, :account_id, :unique_id])
     # |> cast_assoc(:category)
     # |> cast_assoc(:account)
-    |> validate_required([:description, :date, :amount, :category_id, :account_id])
+    |> validate_required([:description, :date, :amount, :category_id, :account_id, :unique_id])
   end
 
 end
