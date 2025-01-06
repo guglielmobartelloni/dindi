@@ -11,11 +11,7 @@ defmodule DindiWeb.CategoriesLive do
   def render(assigns) do
     ~H"""
     <.h1>Categories</.h1>
-    <.table
-      id="posts"
-      row_id={fn category -> "row_#{category.id}" end}
-      rows={@categories}
-    >
+    <.table id="posts" row_id={fn category -> "row_#{category.id}" end} rows={@categories}>
       <:col :let={category} label="Name">{category.name}</:col>
       <:col class="w-64">
         <div class="flex gap-2 items-center justify-end">
@@ -26,4 +22,3 @@ defmodule DindiWeb.CategoriesLive do
     """
   end
 end
-

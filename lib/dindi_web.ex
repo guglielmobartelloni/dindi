@@ -88,7 +88,7 @@ defmodule DindiWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components
-      import DindiWeb.CoreComponents, except: [table: 1, button: 1]
+      import DindiWeb.CoreComponents, except: [table: 1, button: 1, modal: 1]
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
