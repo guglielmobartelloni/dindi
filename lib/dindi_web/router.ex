@@ -20,7 +20,7 @@ defmodule DindiWeb.Router do
     live "/", TransactionsLive, :index
 
     live "/categories", CategoriesLive
-    live "/modal", TransactionsLive, :modal
+    live "/new-trans", TransactionsLive, :modal
   end
 
   # Other scopes may use custom stacks.

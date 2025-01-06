@@ -58,7 +58,11 @@ defmodule Dindi.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:petal_components, "~> 2.8.1"}
+      {:petal_components, "~> 2.8.1"},
+      {:tesla, "~> 1.13"},
+      {:http_cache, "~> 0.3.1"},
+      {:tesla_http_cache, "~> 0.3.0"},
+      {:faker, "~> 0.18"}
     ]
   end
 

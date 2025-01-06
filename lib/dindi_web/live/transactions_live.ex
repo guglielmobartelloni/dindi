@@ -1,6 +1,5 @@
 defmodule DindiWeb.TransactionsLive do
   alias Dindi.Core
-  alias Dindi.Core.Transaction
   alias Dindi.Core.Category
   alias Dindi.Repo
   use DindiWeb, :live_view
@@ -10,9 +9,12 @@ defmodule DindiWeb.TransactionsLive do
     transactions = Core.get_transactions()
     categories = Repo.all(Category) |> Enum.map(fn e -> {e.name, e.id} end)
 
+    total_transaction = Core.get_total_transaction(transactions)
+
     {:ok,
      socket
      |> assign(transactions: transactions)
+     |> assign(total_transaction: total_transaction)
      |> assign(categories: categories)
      |> assign(form: %{} |> to_form)}
   end
@@ -20,7 +22,14 @@ defmodule DindiWeb.TransactionsLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <.h2 class="text-black">Transactions</.h2>
+    <div class="flex items-center justify-between">
+      <.h2 class="text-black">Transactions</.h2>
+      <.link patch={~p"/new-trans"}>
+        <.button>
+          New
+        </.button>
+      </.link>
+    </div>
     <.table
       class="mt-5"
       id="posts"
@@ -36,6 +45,12 @@ defmodule DindiWeb.TransactionsLive do
         </div>
       </:col>
     </.table>
+
+    <.card class="mt-5">
+      <.card_content category="" class="max-w-sm" heading="Total">
+        {@total_transaction.amount}
+      </.card_content>
+    </.card>
 
     <%= if @live_action == :modal do %>
       <.modal max_width="md" title="Add transaction">
@@ -85,15 +100,20 @@ defmodule DindiWeb.TransactionsLive do
         params,
         socket
       ) do
-    # Go back to the :index live action
-
-    case Core.insert_transaction(params) do
+    case Core.insert_fake_transaction(params) do
       {:ok, _} ->
         transactions = Core.get_transactions()
-        {:noreply, socket |> assign(transactions: transactions) |> push_patch(to: ~p"/")}
+
+        {:noreply,
+         socket
+         |> assign(transactions: transactions)
+         |> push_patch(to: ~p"/")}
 
       {:error, _} ->
-        {:noreply, socket |> put_flash(:error, "Can't insert the transaction")}
+        {:noreply,
+         socket
+         |> put_flash(:error, "Can't insert the transaction")
+         |> push_patch(to: ~p"/")}
     end
   end
 end
