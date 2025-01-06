@@ -1,4 +1,5 @@
 defmodule DindiWeb.TransactionsLive do
+  alias Dindi.Core
   alias Dindi.Core.Transaction
   alias Dindi.Core.Category
   alias Dindi.Repo
@@ -6,7 +7,7 @@ defmodule DindiWeb.TransactionsLive do
 
   @impl true
   def mount(_, _, socket) do
-    transactions = Repo.all(Transaction) |> Repo.preload(:category) |> dbg
+    transactions = Core.get_transactions()
     categories = Repo.all(Category) |> Enum.map(fn e -> {e.name, e.id} end)
 
     {:ok,
@@ -68,7 +69,7 @@ defmodule DindiWeb.TransactionsLive do
   end
 
   @impl true
-  def handle_params(params, _uri, socket) do
+  def handle_params(_params, _uri, socket) do
     {:noreply, socket}
   end
 
@@ -86,10 +87,13 @@ defmodule DindiWeb.TransactionsLive do
       ) do
     # Go back to the :index live action
 
-    Transaction.changeset(%Transaction{}, params)
-    |> Repo.insert()
+    case Core.insert_transaction(params) do
+      {:ok, _} ->
+        transactions = Core.get_transactions()
+        {:noreply, socket |> assign(transactions: transactions) |> push_patch(to: ~p"/")}
 
-    transactions = Repo.all(Transaction) |> Repo.preload(:category) |> dbg
-    {:noreply, socket |> assign(transactions: transactions) |> push_patch(to: ~p"/")}
+      {:error, _} ->
+        {:noreply, socket |> put_flash(:error, "Can't insert the transaction")}
+    end
   end
 end
