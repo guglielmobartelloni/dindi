@@ -17,7 +17,9 @@ defmodule DindiWeb.Router do
   scope "/", DindiWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", TransactionsLive
+
+    live "/categories", CategoriesLive
   end
 
   # Other scopes may use custom stacks.
