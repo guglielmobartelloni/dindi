@@ -88,10 +88,11 @@ defmodule DindiWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components
-      import DindiWeb.CoreComponents
+      import DindiWeb.CoreComponents, except: [table: 1, button: 1]
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
+      use PetalComponents
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
